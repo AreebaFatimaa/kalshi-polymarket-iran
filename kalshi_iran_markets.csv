@@ -1,0 +1,12 @@
+Market Title,Status,Top Outcome,Top Outcome Probability (%),Top Yes Price (cents),Top No Price (cents),Sub-Markets,Total Volume ($),Market Open Date,Sub-Market Details
+Will Iran hold a presidential election?,Active,"Before Jan 1, 2027",87,84,97,2,462,"Mar 1, 2026","Before Jan 1 2027: 87% (Yes 84c / No 97c); Before Jul 1 2026: 38% (Yes 36c / No 91c)"
+Will the US reopen its embassy in Iran?,Active,Yes,34,35,69,1,1014,"Mar 1, 2026","34% chance (Yes 35c / No 69c)"
+Who will visit Iran before July?,Active,Reza Pahlavi,31,32,69,3,1622,"Mar 1, 2026","Reza Pahlavi: 31% (Yes 32c / No 69c); Jared Kushner: 17% (Yes 18c / No 90c); Marco Rubio: 12% (Yes 12c / No 91c)"
+Will Iran become a democracy this year?,Active,Yes,13,13,92,1,1679,"Mar 1, 2026","13% chance (Yes 13c / No 92c)"
+Will Donald Trump visit Iran?,Active,"Before Jan 1, 2027",18,15,89,4,6945,"Mar 1, 2026","Before Jan 1 2027: 18% (Yes 15c / No 89c); Before Jun 1 2026: 9% (Yes 9c / No 93c); Before May 1 2026: 7% (Yes 7c / No 98c); Before Apr 1 2026: 1% (Yes 2c / No 99c)"
+Will the United States recognize Reza Pahlavi as the leader of Iran this year?,Active,Yes,26.7,27,74,1,340132,"Jan 8, 2026","26.7% chance (Yes 27c / No 74c)"
+Will Reza Pahlavi visit Iran this year?,Active,Yes,47,47,54,1,364707,"Jan 8, 2026","47% chance (Yes 47c / No 54c)"
+Will Reza Pahlavi lead Iran this year?,Active,Yes,24.6,25,76,1,462212,"Jan 10, 2026","24.6% chance (Yes 25c / No 76c)"
+US-Iran nuclear deal?,Active,Before 2027,64,65,36,3,582635,"Jan 8, 2026","Before 2027: 64% (Yes 65c / No 36c); Before August: 41% (Yes 44c / No 58c); Before April: 22% (Yes 22c / No 79c)"
+Will Iran close the Strait of Hormuz?,Active,Before August,45,35,66,3,1590825,"Jan 8, 2026","Before 2027: 36% (Yes 37c / No 64c); Before August: 45% (Yes 35c / No 66c); Before May: 31% (Yes 30c / No 71c)"
+Who will be the next Supreme Leader of Iran?,Active,Alireza Arafi,25,25,76,9,3270304,"Jan 6, 2026","Alireza Arafi: 25% (Yes 25c / No 76c); Position abolished: 19% (Yes 20c / No 81c); Hassan Khomeini: 15% (Yes 15c / No 86c); Mojtaba Khamenei: 10% (Yes 10c / No 91c); Gholam-Hossein Mohseni-Ejei: 9% (Yes 9c / No 92c); Ali Larijani: 8% (Yes 8c / No 93c); Sadeq Amoli Larijani: 6% (Yes 6c / No 97c); Mohammad Mahdi Mirbagheri: 3% (Yes 3c / No 98c); Ali Asghar Hejazi: 2% (Yes 2c / No 99c)"
