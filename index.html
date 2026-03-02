@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalshi v Polymarket: Deconstructing War-Time Bets</title>
+<script src="https://unpkg.com/scrollama@3.2.0/build/scrollama.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 18px; scroll-behavior: smooth; }
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  color: #1a1a2e;
+  background: #fff;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Typography ── */
+h1, h2, h3, .chart-title, .step-label {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+h1 { font-size: 2.4rem; font-weight: 900; line-height: 1.15; letter-spacing: -0.02em; }
+h2 { font-size: 1.5rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.5rem; }
+h3 { font-size: 1.1rem; font-weight: 600; line-height: 1.4; }
+p { margin-bottom: 1.2rem; }
+a { color: #2563eb; }
+
+/* ── Layout ── */
+.container { max-width: 680px; margin: 0 auto; padding: 0 1.25rem; }
+.wide-container { max-width: 1100px; margin: 0 auto; padding: 0 1.25rem; }
+
+/* ── Header ── */
+header {
+  padding: 4rem 0 2rem;
+  border-bottom: 4px solid #1a1a2e;
+  margin-bottom: 2rem;
+}
+header .container { max-width: 680px; }
+.kicker {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #dc2626;
+  margin-bottom: 0.75rem;
+}
+.subtitle {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: #4b5563;
+  line-height: 1.5;
+  margin-top: 1rem;
+}
+.byline {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 1.5rem;
+}
+
+/* ── Prose sections ── */
+.prose { padding: 2rem 0; }
+.prose p { max-width: 680px; margin-left: auto; margin-right: auto; padding: 0 1.25rem; }
+.prose h2 { max-width: 680px; margin-left: auto; margin-right: auto; padding: 0 1.25rem; margin-top: 2rem; }
+
+.section-break {
+  max-width: 680px;
+  margin: 2.5rem auto;
+  padding: 0 1.25rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.pull-quote {
+  max-width: 680px;
+  margin: 2rem auto;
+  padding: 1.5rem 1.25rem 1.5rem 2rem;
+  border-left: 4px solid #dc2626;
+  font-size: 1.15rem;
+  font-style: italic;
+  color: #374151;
+  background: #fafafa;
+}
+
+/* ── Scrollytelling ── */
+.scrolly {
+  position: relative;
+  display: flex;
+  padding: 1rem 0;
+}
+.scrolly__graphic {
+  position: sticky;
+  top: 0;
+  width: 55%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.scrolly__graphic .chart-container {
+  width: 100%;
+  max-width: 560px;
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 1.5rem;
+}
+.chart-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: #1a1a2e;
+}
+.chart-subtitle {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+.chart-source {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.65rem;
+  color: #9ca3af;
+  margin-top: 0.75rem;
+}
+.scrolly__steps {
+  width: 45%;
+  padding: 0 1.25rem;
+}
+.step {
+  min-height: 75vh;
+  display: flex;
+  align-items: center;
+  padding: 2rem 1rem;
+  opacity: 0.25;
+  transition: opacity 0.4s ease;
+}
+.step.is-active { opacity: 1; }
+.step-inner {
+  background: rgba(255,255,255,0.95);
+  padding: 1.25rem 1.5rem;
+  border-radius: 4px;
+  border-left: 3px solid #e5e7eb;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.step.is-active .step-inner { border-left-color: #2563eb; }
+.step-inner p { font-size: 0.95rem; margin-bottom: 0.5rem; }
+.step-inner p:last-child { margin-bottom: 0; }
+
+/* ── D3 Chart Styles ── */
+.bar-label {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 12px;
+  fill: #374151;
+}
+.bar-value {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  fill: #1a1a2e;
+}
+.axis text {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 11px;
+  fill: #6b7280;
+}
+.axis line, .axis path { stroke: #e5e7eb; }
+.gridline line { stroke: #f3f4f6; }
+.annotation {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 11px;
+  fill: #6b7280;
+}
+
+/* ── Inline data callout ── */
+.data-callout {
+  display: inline-block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.poly-color { color: #6366f1; }
+.kalshi-color { color: #0ea5e9; }
+.june-color { color: #dc2626; }
+.feb-color { color: #2563eb; }
+
+/* ── Comparison Table ── */
+.compare-table {
+  max-width: 680px;
+  margin: 1.5rem auto;
+  padding: 0 1.25rem;
+}
+.compare-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.85rem;
+}
+.compare-table th {
+  text-align: left;
+  font-weight: 700;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 2px solid #1a1a2e;
+  font-size: 0.8rem;
+}
+.compare-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: top;
+}
+.compare-table tr:last-child td { border-bottom: none; }
+
+/* ── Footer ── */
+footer {
+  padding: 3rem 0;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 2rem;
+}
+footer p {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  line-height: 1.6;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  html { font-size: 16px; }
+  h1 { font-size: 1.8rem; }
+  .scrolly { flex-direction: column; }
+  .scrolly__graphic {
+    position: sticky;
+    width: 100%;
+    height: 55vh;
+    padding: 0.5rem;
+  }
+  .scrolly__steps { width: 100%; padding: 0 0.75rem; }
+  .step { min-height: 50vh; }
+  .scrolly__graphic .chart-container { padding: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ HEADER ═══════════════════ -->
+<header>
+  <div class="container">
+    <div class="kicker">Prediction Markets &amp; Geopolitics</div>
+    <h1>Kalshi v Polymarket: Deconstructing war-time bets during U.S.-Israel war on Iran</h1>
+    <p class="subtitle">How two prediction market platforms handled over $1 billion in bets on the conflict &mdash; and what the money reveals about what traders really expected.</p>
+    <p class="byline">Data analysis and reporting</p>
+  </div>
+</header>
+
+<!-- ═══════════════════ INTRO ═══════════════════ -->
+<section class="prose">
+  <p>On Feb. 28, at 11:37 PM President Donald Trump announced on Truth Social, &ldquo;Khamenei, one of the most evil people in History, is dead.&rdquo; However, on Polymarket&rsquo;s highest-trending market, traders had gone from 27% buying the Yes option a day before at 7 PM, to 96% just 24 hours later, still a few hours before Trump&rsquo;s announcement.</p>
+
+  <p>The comment section of &ldquo;Khamenei out as Supreme Leader of Iran by February 28?&rdquo; opens a window into the dissatisfaction that many traders will walk away with, once the market resolves.</p>
+
+  <div class="pull-quote">&ldquo;I JUST DISPUTED THIS I TOLD YOU FUCKS I WOULD NOT STAND FOR A FALSE RESOLUTION.&rdquo;<br><span style="font-style:normal; font-size:0.8rem; color:#9ca3af;">&mdash; Top comment on a market with $97 million in trading volume</span></div>
+
+  <p>The discussion in the comments points to a heated debate over how this market should be resolved. Some traders claim it would be unfair to conclude that Khamenei was killed on Feb. 28, because the Iranian government confirmed his death on Mar. 1.</p>
+
+  <p>Others believe owing to Iran&rsquo;s constitutional requirements regarding transfer of power, it only makes sense to resolve the market based on when the U.S. airstrike killed Khamenei.</p>
+
+  <p>Pitting Kalshi against Polymarket, traders are furiously arguing how these platforms are approaching resolving war-time bets.</p>
+</section>
+
+<div class="section-break"></div>
+
+<!-- ═══════════════════ SCROLLY 1: PLATFORM COMPARISON ═══════════════════ -->
+<section class="prose">
+  <h2>How much money are we talking about?</h2>
+  <p>Both Polymarket and Kalshi host Iran-related prediction markets. But the scale of activity on each platform could not be more different.</p>
+</section>
+
+<section class="scrolly" id="scrolly-platform">
+  <div class="scrolly__graphic">
+    <div class="chart-container">
+      <div class="chart-title">Iran prediction markets: Trading volume</div>
+      <div class="chart-subtitle">2026 U.S. strikes period. All active Kalshi markets; comparable Polymarket markets.</div>
+      <div id="chart-platform"></div>
+      <div class="chart-source">Source: Polymarket Gamma API, Kalshi manual collection. March 1, 2026.</div>
+    </div>
+  </div>
+  <div class="scrolly__steps">
+    <div class="step" data-step="p0">
+      <div class="step-inner">
+        <p><strong>Polymarket&rsquo;s 2026 Iran markets generated <span class="data-callout poly-color">$943 million</span> in total trading volume</strong> across 22 markets tied to the February strikes.</p>
+        <p>The single largest market &mdash; &ldquo;US strikes Iran by...?&rdquo; &mdash; attracted $529 million on its own, spread across 65 sub-markets betting on different dates.</p>
+      </div>
+    </div>
+    <div class="step" data-step="p1">
+      <div class="step-inner">
+        <p><strong>Kalshi, by comparison, saw <span class="data-callout kalshi-color">$6.6 million</span></strong> across 11 Iran markets. That&rsquo;s roughly <strong>143 times smaller</strong>.</p>
+        <p>The gap is so large that Kalshi&rsquo;s entire Iran portfolio is less than 1% of Polymarket&rsquo;s volume on the same topic.</p>
+      </div>
+    </div>
+    <div class="step" data-step="p2">
+      <div class="step-inner">
+        <p><strong>The most popular bets on both platforms</strong> revolve around the same themes: who will lead Iran next, and what happens to the Pahlavi dynasty.</p>
+        <p>On Kalshi, the next Supreme Leader market ($3.3M) is the biggest. On Polymarket, Khamenei death markets dominate ($270M combined).</p>
+      </div>
+    </div>
+    <div class="step" data-step="p3">
+      <div class="step-inner">
+        <p><strong>Where Kalshi competes:</strong> For niche political-future markets, Kalshi actually attracts more activity than Polymarket.</p>
+        <p>&ldquo;Next Supreme Leader&rdquo; on Kalshi ($3.3M) has <strong>3x</strong> the volume of the equivalent Polymarket market ($1.1M). Pahlavi-related markets are also comparable.</p>
+        <p>The difference? Polymarket dominates binary military-outcome bets. Kalshi focuses on political futures.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-break"></div>
+
+<!-- ═══════════════════ REGULATION ═══════════════════ -->
+<section class="prose">
+  <h2>Kalshi and Polymarket approach war-time bets differently</h2>
+
+  <p>In a statement on X, Kalshi CEO Tarek Mansour said, &ldquo;We don&rsquo;t list markets directly tied to death.&rdquo; This was in response to growing concerns among prediction market traders regarding how Kalshi will end up resolving the market &ldquo;Ali Khamenei out as Supreme Leader?&rdquo;</p>
+
+  <p>A disclaimer on Kalshi&rsquo;s website reads, &ldquo;If Ali Khamenei dies, the market will resolve upon the confirmed reporting of the death, based on the last traded price prior to death.&rdquo; Citing Rule 13.1, the market was paused, pending further review, confirming that Kalshi will reimburse lost value due to trades made between these clarifications.</p>
+
+  <p>Both headquartered in New York City, Kalshi and Polymarket deal with Iran-related predictions differently because their operating structures are fundamentally different.</p>
+</section>
+
+<div class="compare-table">
+  <table>
+    <thead>
+      <tr><th></th><th style="color:#6366f1;">Polymarket</th><th style="color:#0ea5e9;">Kalshi</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Regulation</strong></td><td>Unregulated offshore (Polygon blockchain)</td><td>CFTC-regulated U.S. exchange</td></tr>
+      <tr><td><strong>KYC</strong></td><td>No identity verification required</td><td>Full KYC; U.S. residents only</td></tr>
+      <tr><td><strong>Currency</strong></td><td>USDC (cryptocurrency)</td><td>U.S. dollars</td></tr>
+      <tr><td><strong>Death markets</strong></td><td>Lists markets directly on death outcomes</td><td>&ldquo;We don&rsquo;t list markets directly tied to death&rdquo;</td></tr>
+      <tr><td><strong>Dispute resolution</strong></td><td>UMA oracle protocol (decentralized vote)</td><td>Internal rules committee (Rule 13.1)</td></tr>
+      <tr><td><strong>Market pausing</strong></td><td>Markets remain open; prices reflect disputes</td><td>Can pause and reimburse under Rule 13.1</td></tr>
+      <tr><td><strong>Iran volume</strong></td><td>$943 million (2026 strikes)</td><td>$6.6 million (2026 strikes)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<section class="prose">
+  <p>The regulatory gap explains the volume gap. Polymarket&rsquo;s crypto-native, globally accessible model attracts orders of magnitude more capital on geopolitical bets &mdash; but it also attracts more controversy, more disputed resolutions, and more suspicion of insider trading.</p>
+</section>
+
+<div class="section-break"></div>
+
+<!-- ═══════════════════ SCROLLY 2: PERIOD COMPARISON ═══════════════════ -->
+<section class="prose">
+  <h2>Betting patterns on Polymarket: 12-Day War vs. the ongoing escalation</h2>
+  <p>Traders took betting on Iran a lot more seriously in 2026 than they did last year during the 12-Day War. Out of the 33 Iran-related markets on Polymarket analyzed here, 22 are linked to the recent strikes.</p>
+</section>
+
+<section class="scrolly" id="scrolly-period">
+  <div class="scrolly__graphic">
+    <div class="chart-container">
+      <div class="chart-title">Polymarket Iran volume: June 2025 vs. Feb 2026</div>
+      <div class="chart-subtitle">Total trading volume across all Iran-related markets in each conflict period.</div>
+      <div id="chart-period"></div>
+      <div class="chart-source">Source: Polymarket Gamma API. Markets tagged by conflict period.</div>
+    </div>
+  </div>
+  <div class="scrolly__steps">
+    <div class="step" data-step="t0">
+      <div class="step-inner">
+        <p>During the <strong><span class="june-color">June 2025 12-Day War</span></strong>, Polymarket&rsquo;s Iran markets generated <strong>$175 million</strong> in trading volume across 9 markets.</p>
+        <p>The biggest bet? Whether there would be a ceasefire, at $51.8 million.</p>
+      </div>
+    </div>
+    <div class="step" data-step="t1">
+      <div class="step-inner">
+        <p>The <strong><span class="feb-color">2026 U.S. Strikes</span></strong> generated <strong>$943 million</strong> &mdash; a <strong>5.4x increase</strong> over the 12-Day War.</p>
+        <p>CoinDesk reported Iran-related bets topped $529 million on a single market, making it one of the most-traded contracts Polymarket has ever hosted.</p>
+      </div>
+    </div>
+    <div class="step" data-step="t2">
+      <div class="step-inner">
+        <p><strong>The kind of bets changed dramatically.</strong></p>
+        <p>In June 2025, <span class="june-color"><strong>ceasefire bets dominated</strong></span> at 30% of all volume. Traders wanted to know when it would end.</p>
+        <p>In 2026, <span class="feb-color"><strong>military strike timing</strong></span> dominates at 71% of volume. And <strong>leadership/Khamenei</strong> bets exploded from $8M to $221M &mdash; a 27x increase.</p>
+      </div>
+    </div>
+    <div class="step" data-step="t3">
+      <div class="step-inner">
+        <p><strong>A handful of blockbuster markets attract most of the money.</strong></p>
+        <p>Our analysis shows a top-heavy trend: the top 10 markets hold <strong>82% of total trading volume</strong>. The remaining 23 markets share just 18%.</p>
+        <p>Bettors are now putting money on ceasefire timing, whether the Iranian regime will fall by March 31, who will replace the Supreme Leader, and every other possibility under the sun. There are at least 66 open Iran-related markets on Polymarket, and 11 on Kalshi.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-break"></div>
+
+<!-- ═══════════════════ CLOSING ═══════════════════ -->
+<section class="prose">
+  <h2>What traders are betting on now</h2>
+  <p>As of March 1, 2026, the active markets paint a picture of what traders expect next:</p>
+  <p>Khamenei is out &mdash; that&rsquo;s priced at <strong>99.9%</strong> certainty. But whether the Iranian regime itself falls is far less clear: <strong>23%</strong> by March 31, <strong>42%</strong> by June 30. A new Supreme Leader will be named by March 31, traders say, with <strong>77%</strong> confidence.</p>
+  <p>On Kalshi, the most-traded question is who that leader will be. Alireza Arafi leads at 25%, followed by &ldquo;position abolished&rdquo; at 19% &mdash; a bet that Iran may not have a Supreme Leader at all.</p>
+  <p>The prediction markets have become a real-time barometer of geopolitical expectations &mdash; one where a billion dollars of capital is backing every percentage point.</p>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer>
+  <p><strong>Methodology:</strong> Polymarket data collected via the Gamma API on March 1, 2026. Kalshi data collected manually from kalshi.com/category/politics/iran on the same date. Markets were classified by conflict period based on creation dates and subject matter. Volume figures represent total contracts traded, not open interest. All Kalshi markets shown are for the 2026 period; the settled Khamenei market ($54.5M) was excluded from active comparisons.</p>
+  <p style="margin-top:0.5rem;"><strong>Sources:</strong> <a href="https://polymarket.com/predictions/iran" target="_blank">Polymarket</a> &middot; <a href="https://kalshi.com/category/politics/iran" target="_blank">Kalshi</a> &middot; CoinDesk &middot; The Daily Beast &middot; NPR &middot; Times of Israel &middot; Bubblemaps</p>
+</footer>
+
+<!-- ═══════════════════ JAVASCRIPT ═══════════════════ -->
+<script>
+// ── Data ──
+const platformData = {
+  totals: [
+    { platform: 'Polymarket', volume: 943070153, color: '#6366f1' },
+    { platform: 'Kalshi', volume: 6622537, color: '#0ea5e9' }
+  ],
+  comparable: [
+    { category: 'Next Supreme Leader', poly: 1068190, kalshi: 3270304 },
+    { category: 'Strait of Hormuz', poly: 0, kalshi: 1590825 },
+    { category: 'Nuclear deal', poly: 0, kalshi: 582635 },
+    { category: 'Pahlavi: Lead Iran', poly: 0, kalshi: 462212 },
+    { category: 'Pahlavi: Visit Iran', poly: 0, kalshi: 364707 },
+    { category: 'Pahlavi: Recognized', poly: 283851, kalshi: 340132 },
+    { category: 'U.S. invasion', poly: 266003, kalshi: 0 }
+  ],
+  polyTop: [
+    { name: 'US strikes Iran by...', vol: 529033417, type: 'aggregate' },
+    { name: 'Khamenei out by Feb 28', vol: 97148684, type: 'single' },
+    { name: 'US next strikes (Jan-Feb)', vol: 54785028, type: 'aggregate' },
+    { name: 'Khamenei out by Mar 31', vol: 54350191, type: 'single' },
+    { name: 'Khamenei out by Jan 31', vol: 49748804, type: 'single' },
+    { name: 'US next strikes (Jan)', vol: 28513815, type: 'aggregate' },
+    { name: 'Diplomatic meeting', vol: 23382786, type: 'aggregate' },
+    { name: 'US/Israel strikes by...', vol: 19807823, type: 'aggregate' }
+  ]
+};
+
+const periodData = {
+  totals: [
+    { period: 'June 2025\n12-Day War', volume: 175090162, color: '#dc2626', markets: 9 },
+    { period: 'Feb 2026\nU.S. Strikes', volume: 943070153, color: '#2563eb', markets: 22 }
+  ],
+  categories: [
+    { cat: 'Military strikes',  june: 49798061,  feb: 668100000 },
+    { cat: 'Leadership',        june: 8130896,   feb: 221300000 },
+    { cat: 'Ceasefire / Peace', june: 52902034,  feb: 484000 },
+    { cat: 'Nuclear / Facilities', june: 28623187, feb: 0 },
+    { cat: 'Regime change',     june: 0,         feb: 29700000 },
+    { cat: 'Other',             june: 35592911,  feb: 23400000 }
+  ],
+  concentration: [
+    { rank: 'Top 1', pct: 47.2 },
+    { rank: 'Top 3', pct: 60.8 },
+    { rank: 'Top 5', pct: 70.1 },
+    { rank: 'Top 10', pct: 82.1 },
+    { rank: 'Remaining 23', pct: 17.9 }
+  ]
+};
+
+// ── Helpers ──
+function fmt(n) {
+  if (n >= 1e9) return '$' + (n / 1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(0) + 'M';
+  if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
+  return '$' + n;
+}
+function fmtPrecise(n) {
+  if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
+  return '$' + n;
+}
+
+// ── Chart dimensions ──
+function getDims(containerId) {
+  const el = document.getElementById(containerId);
+  const w = el.clientWidth;
+  const isMobile = window.innerWidth < 768;
+  return {
+    width: w,
+    height: isMobile ? 320 : 380,
+    margin: { top: 10, right: 90, bottom: 30, left: isMobile ? 100 : 150 }
+  };
+}
+
+// ══════════════════════════════════════════════════
+//  PLATFORM CHART
+// ══════════════════════════════════════════════════
+let platformState = -1;
+
+function drawPlatformChart(step) {
+  if (step === platformState) return;
+  platformState = step;
+
+  const container = d3.select('#chart-platform');
+  container.selectAll('*').remove();
+
+  const dim = getDims('chart-platform');
+  const svg = container.append('svg')
+    .attr('width', dim.width)
+    .attr('height', dim.height);
+  const g = svg.append('g')
+    .attr('transform', `translate(${dim.margin.left},${dim.margin.top})`);
+  const innerW = dim.width - dim.margin.left - dim.margin.right;
+  const innerH = dim.height - dim.margin.top - dim.margin.bottom;
+
+  if (step <= 1) {
+    // Steps 0-1: Total volume comparison
+    const data = step === 0
+      ? [platformData.totals[0]]
+      : platformData.totals;
+
+    const y = d3.scaleBand().domain(data.map(d => d.platform)).range([0, Math.min(data.length * 65, innerH)]).padding(0.4);
+    const x = d3.scaleLinear().domain([0, 1e9]).range([0, innerW]);
+
+    // Gridlines
+    g.selectAll('.gridline').data(x.ticks(4)).join('line')
+      .attr('class', 'gridline')
+      .attr('x1', d => x(d)).attr('x2', d => x(d))
+      .attr('y1', 0).attr('y2', Math.min(data.length * 65, innerH))
+      .attr('stroke', '#f3f4f6');
+
+    // Bars
+    const bars = g.selectAll('.bar').data(data).join('rect')
+      .attr('class', 'bar')
+      .attr('y', d => y(d.platform))
+      .attr('height', y.bandwidth())
+      .attr('x', 0)
+      .attr('fill', d => d.color)
+      .attr('rx', 2);
+    bars.transition().duration(600).attr('width', d => x(d.volume));
+
+    // Labels
+    g.selectAll('.bar-label').data(data).join('text')
+      .attr('class', 'bar-label')
+      .attr('x', -8)
+      .attr('y', d => y(d.platform) + y.bandwidth() / 2)
+      .attr('text-anchor', 'end')
+      .attr('dominant-baseline', 'central')
+      .text(d => d.platform);
+
+    // Values
+    g.selectAll('.bar-value').data(data).join('text')
+      .attr('class', 'bar-value')
+      .attr('x', d => x(d.volume) + 8)
+      .attr('y', d => y(d.platform) + y.bandwidth() / 2)
+      .attr('dominant-baseline', 'central')
+      .text(d => fmtPrecise(d.volume));
+
+    if (step === 1) {
+      g.append('text').attr('class', 'annotation')
+        .attr('x', x(6622537) + 80)
+        .attr('y', y('Kalshi') + y.bandwidth() / 2 + 20)
+        .text('143x smaller');
+    }
+
+  } else if (step === 2) {
+    // Top Polymarket markets
+    const data = platformData.polyTop;
+    const y = d3.scaleBand().domain(data.map(d => d.name)).range([0, innerH]).padding(0.3);
+    const x = d3.scaleLinear().domain([0, 550e6]).range([0, innerW]);
+
+    g.selectAll('.gridline').data(x.ticks(4)).join('line')
+      .attr('x1', d => x(d)).attr('x2', d => x(d))
+      .attr('y1', 0).attr('y2', innerH)
+      .attr('stroke', '#f3f4f6');
+
+    g.selectAll('.bar').data(data).join('rect')
+      .attr('y', d => y(d.name))
+      .attr('height', y.bandwidth())
+      .attr('x', 0)
+      .attr('rx', 2)
+      .attr('fill', d => d.type === 'aggregate' ? '#a5b4fc' : '#6366f1')
+      .transition().duration(600)
+      .attr('width', d => x(d.vol));
+
+    g.selectAll('.bar-label').data(data).join('text')
+      .attr('class', 'bar-label')
+      .attr('x', -8).attr('text-anchor', 'end')
+      .attr('y', d => y(d.name) + y.bandwidth() / 2)
+      .attr('dominant-baseline', 'central')
+      .style('font-size', '10px')
+      .text(d => d.name);
+
+    g.selectAll('.bar-value').data(data).join('text')
+      .attr('class', 'bar-value')
+      .attr('x', d => x(d.vol) + 6)
+      .attr('y', d => y(d.name) + y.bandwidth() / 2)
+      .attr('dominant-baseline', 'central')
+      .style('font-size', '10px')
+      .text(d => fmt(d.vol));
+
+    // Legend
+    const lg = svg.append('g').attr('transform', `translate(${dim.margin.left}, ${dim.height - 15})`);
+    lg.append('rect').attr('width', 10).attr('height', 10).attr('fill', '#6366f1').attr('rx', 1);
+    lg.append('text').attr('x', 14).attr('y', 9).style('font-size', '10px').style('font-family', 'sans-serif').style('fill', '#6b7280').text('Single binary market');
+    lg.append('rect').attr('x', 140).attr('width', 10).attr('height', 10).attr('fill', '#a5b4fc').attr('rx', 1);
+    lg.append('text').attr('x', 154).attr('y', 9).style('font-size', '10px').style('font-family', 'sans-serif').style('fill', '#6b7280').text('Multi-outcome aggregate');
+
+  } else {
+    // Comparable categories
+    const data = platformData.comparable.filter(d => d.poly > 0 || d.kalshi > 0);
+    const y = d3.scaleBand().domain(data.map(d => d.category)).range([0, innerH]).padding(0.25);
+    const subY = d3.scaleBand().domain(['poly', 'kalshi']).range([0, y.bandwidth()]).padding(0.08);
+    const maxVal = d3.max(data, d => Math.max(d.poly, d.kalshi));
+    const x = d3.scaleLinear().domain([0, maxVal * 1.15]).range([0, innerW]);
+
+    g.selectAll('.gridline').data(x.ticks(4)).join('line')
+      .attr('x1', d => x(d)).attr('x2', d => x(d))
+      .attr('y1', 0).attr('y2', innerH)
+      .attr('stroke', '#f3f4f6');
+
+    data.forEach(d => {
+      const gy = g.append('g').attr('transform', `translate(0, ${y(d.category)})`);
+      if (d.poly > 0) {
+        gy.append('rect').attr('y', subY('poly')).attr('height', subY.bandwidth())
+          .attr('fill', '#6366f1').attr('rx', 2)
+          .transition().duration(600).attr('width', x(d.poly));
+        gy.append('text').attr('class', 'bar-value').style('font-size', '10px')
+          .attr('x', x(d.poly) + 5).attr('y', subY('poly') + subY.bandwidth()/2)
+          .attr('dominant-baseline', 'central').text(fmt(d.poly));
+      }
+      if (d.kalshi > 0) {
+        gy.append('rect').attr('y', subY('kalshi')).attr('height', subY.bandwidth())
+          .attr('fill', '#0ea5e9').attr('rx', 2)
+          .transition().duration(600).attr('width', x(d.kalshi));
+        gy.append('text').attr('class', 'bar-value').style('font-size', '10px')
+          .attr('x', x(d.kalshi) + 5).attr('y', subY('kalshi') + subY.bandwidth()/2)
+          .attr('dominant-baseline', 'central').text(fmt(d.kalshi));
+      }
+    });
+
+    g.selectAll('.bar-label').data(data).join('text')
+      .attr('class', 'bar-label')
+      .attr('x', -8).attr('text-anchor', 'end')
+      .attr('y', d => y(d.category) + y.bandwidth() / 2)
+      .attr('dominant-baseline', 'central')
+      .style('font-size', '10px')
+      .text(d => d.category);
+
+    // Legend
+    const lg = svg.append('g').attr('transform', `translate(${dim.margin.left}, ${dim.height - 15})`);
+    lg.append('rect').attr('width', 10).attr('height', 10).attr('fill', '#6366f1').attr('rx', 1);
+    lg.append('text').attr('x', 14).attr('y', 9).style('font-size', '10px').style('font-family', 'sans-serif').style('fill', '#6b7280').text('Polymarket');
+    lg.append('rect').attr('x', 90).attr('width', 10).attr('height', 10).attr('fill', '#0ea5e9').attr('rx', 1);
+    lg.append('text').attr('x', 104).attr('y', 9).style('font-size', '10px').style('font-family', 'sans-serif').style('fill', '#6b7280').text('Kalshi');
+  }
+}
+
+// ══════════════════════════════════════════════════
+//  PERIOD CHART
+// ══════════════════════════════════════════════════
+let periodState = -1;
+
+function drawPeriodChart(step) {
+  if (step === periodState) return;
+  periodState = step;
+
+  const container = d3.select('#chart-period');
+  container.selectAll('*').remove();
+
+  const dim = getDims('chart-period');
+  const svg = container.append('svg')
+    .attr('width', dim.width)
+    .attr('height', dim.height);
+  const g = svg.append('g')
+    .attr('transform', `translate(${dim.margin.left},${dim.margin.top})`);
+  const innerW = dim.width - dim.margin.left - dim.margin.right;
+  const innerH = dim.height - dim.margin.top - dim.margin.bottom;
+
+  // Update chart title
+  const titleEl = container.node().closest('.chart-container').querySelector('.chart-title');
+  const subtitleEl = container.node().closest('.chart-container').querySelector('.chart-subtitle');
+
+  if (step <= 1) {
+    titleEl.textContent = 'Total trading volume by conflict period';
+    subtitleEl.textContent = 'Polymarket Iran-related markets only.';
+
+    const data = step === 0
+      ? [periodData.totals[0]]
+      : periodData.totals;
+
+    const y = d3.scaleBand().domain(data.map(d => d.period)).range([0, Math.min(data.length * 75, innerH)]).padding(0.4);
+    const x = d3.scaleLinear().domain([0, 1e9]).range([0, innerW]);
+
+    g.selectAll('.gridline').data(x.ticks(4)).join('line')
+      .attr('x1', d => x(d)).attr('x2', d => x(d))
+      .attr('y1', 0).attr('y2', Math.min(data.length * 75, innerH))
+      .attr('stroke', '#f3f4f6');
+
+    g.selectAll('.bar').data(data).join('rect')
+      .attr('y', d => y(d.period)).attr('height', y.bandwidth())
+      .attr('x', 0).attr('fill', d => d.color).attr('rx', 2)
+      .transition().duration(600).attr('width', d => x(d.volume));
+
+    g.selectAll('.bar-label').data(data).join('text')
+      .attr('class', 'bar-label')
+      .attr('x', -8).attr('text-anchor', 'end')
+      .attr('y', d => y(d.period) + y.bandwidth() / 2)
+      .attr('dominant-baseline', 'central')
+      .each(function(d) {
+        const lines = d.period.split('\n');
+        const el = d3.select(this);
+        el.text('');
+        lines.forEach((line, i) => {
+          el.append('tspan').attr('x', -8).attr('dy', i === 0 ? '-0.3em' : '1.2em').text(line);
+        });
+      });
+
+    g.selectAll('.bar-value').data(data).join('text')
+      .attr('class', 'bar-value')
+      .attr('x', d => x(d.volume) + 8)
+      .attr('y', d => y(d.period) + y.bandwidth() / 2)
+      .attr('dominant-baseline', 'central')
+      .text(d => fmtPrecise(d.volume));
+
+    if (step === 1) {
+      // Arrow annotation
+      g.append('text').attr('class', 'annotation')
+        .attr('x', innerW / 2)
+        .attr('y', Math.min(data.length * 75, innerH) + 20)
+        .attr('text-anchor', 'middle')
+        .style('font-weight', '600').style('fill', '#2563eb')
+        .text('5.4x increase in volume');
+    }
+
+  } else if (step === 2) {
+    titleEl.textContent = 'Volume by market category';
+    subtitleEl.textContent = 'How the type of bets shifted between conflict periods.';
+
+    const data = periodData.categories;
+    const y = d3.scaleBand().domain(data.map(d => d.cat)).range([0, innerH]).padding(0.25);
+    const subY = d3.scaleBand().domain(['june', 'feb']).range([0, y.bandwidth()]).padding(0.08);
+    const maxVal = d3.max(data, d => Math.max(d.june, d.feb));
+    const x = d3.scaleLinear().domain([0, maxVal * 1.1]).range([0, innerW]);
+
+    g.selectAll('.gridline').data(x.ticks(4)).join('line')
+      .attr('x1', d => x(d)).attr('x2', d => x(d))
+      .attr('y1', 0).attr('y2', innerH)
+      .attr('stroke', '#f3f4f6');
+
+    data.forEach(d => {
+      const gy = g.append('g').attr('transform', `translate(0, ${y(d.cat)})`);
+      if (d.june > 0) {
+        gy.append('rect').attr('y', subY('june')).attr('height', subY.bandwidth())
+          .attr('fill', '#dc2626').attr('rx', 2).attr('opacity', 0.85)
+          .transition().duration(600).attr('width', x(d.june));
+        gy.append('text').attr('class', 'bar-value').style('font-size', '10px')
+          .attr('x', x(d.june) + 5).attr('y', subY('june') + subY.bandwidth()/2)
+          .attr('dominant-baseline', 'central').text(fmt(d.june));
+      }
+      if (d.feb > 0) {
+        gy.append('rect').attr('y', subY('feb')).attr('height', subY.bandwidth())
+          .attr('fill', '#2563eb').attr('rx', 2).attr('opacity', 0.85)
+          .transition().duration(600).attr('width', x(d.feb));
+        gy.append('text').attr('class', 'bar-value').style('font-size', '10px')
+          .attr('x', x(d.feb) + 5).attr('y', subY('feb') + subY.bandwidth()/2)
+          .attr('dominant-baseline', 'central').text(fmt(d.feb));
+      }
+    });
+
+    g.selectAll('.bar-label').data(data).join('text')
+      .attr('class', 'bar-label')
+      .attr('x', -8).attr('text-anchor', 'end')
+      .attr('y', d => y(d.cat) + y.bandwidth() / 2)
+      .attr('dominant-baseline', 'central')
+      .style('font-size', '10.5px')
+      .text(d => d.cat);
+
+    // Legend
+    const lg = svg.append('g').attr('transform', `translate(${dim.margin.left}, ${dim.height - 15})`);
+    lg.append('rect').attr('width', 10).attr('height', 10).attr('fill', '#dc2626').attr('rx', 1);
+    lg.append('text').attr('x', 14).attr('y', 9).style('font-size', '10px').style('font-family', 'sans-serif').style('fill', '#6b7280').text('June 2025');
+    lg.append('rect').attr('x', 90).attr('width', 10).attr('height', 10).attr('fill', '#2563eb').attr('rx', 1);
+    lg.append('text').attr('x', 104).attr('y', 9).style('font-size', '10px').style('font-family', 'sans-serif').style('fill', '#6b7280').text('Feb 2026');
+
+  } else {
+    titleEl.textContent = 'Volume concentration: top-heavy betting';
+    subtitleEl.textContent = 'Cumulative share of total volume by market rank.';
+
+    const data = periodData.concentration;
+    const y = d3.scaleBand().domain(data.map(d => d.rank)).range([0, innerH]).padding(0.35);
+    const x = d3.scaleLinear().domain([0, 100]).range([0, innerW]);
+
+    // Background 100% bars
+    g.selectAll('.bg-bar').data(data).join('rect')
+      .attr('y', d => y(d.rank)).attr('height', y.bandwidth())
+      .attr('x', 0).attr('width', innerW)
+      .attr('fill', '#f3f4f6').attr('rx', 2);
+
+    // Filled bars
+    g.selectAll('.bar').data(data).join('rect')
+      .attr('y', d => y(d.rank)).attr('height', y.bandwidth())
+      .attr('x', 0).attr('rx', 2)
+      .attr('fill', (d, i) => i < 4 ? '#2563eb' : '#94a3b8')
+      .transition().duration(600)
+      .attr('width', d => x(d.pct));
+
+    g.selectAll('.bar-label').data(data).join('text')
+      .attr('class', 'bar-label')
+      .attr('x', -8).attr('text-anchor', 'end')
+      .attr('y', d => y(d.rank) + y.bandwidth() / 2)
+      .attr('dominant-baseline', 'central')
+      .text(d => d.rank);
+
+    g.selectAll('.bar-value').data(data).join('text')
+      .attr('class', 'bar-value')
+      .attr('x', d => x(d.pct) + 6)
+      .attr('y', d => y(d.rank) + y.bandwidth() / 2)
+      .attr('dominant-baseline', 'central')
+      .text(d => d.pct + '%');
+  }
+}
+
+// ── Scrollama Setup ──
+function initScrolly(containerSelector, chartDrawFn) {
+  const scroller = scrollama();
+  scroller.setup({
+    step: containerSelector + ' .step',
+    offset: 0.5,
+    debug: false
+  }).onStepEnter(response => {
+    // Activate step
+    d3.selectAll(containerSelector + ' .step').classed('is-active', false);
+    d3.select(response.element).classed('is-active', true);
+    chartDrawFn(response.index);
+  });
+  return scroller;
+}
+
+// ── Init ──
+const scroller1 = initScrolly('#scrolly-platform', drawPlatformChart);
+const scroller2 = initScrolly('#scrolly-period', drawPeriodChart);
+
+// Draw initial states
+drawPlatformChart(0);
+drawPeriodChart(0);
+
+// Handle resize
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    platformState = -1;
+    periodState = -1;
+    drawPlatformChart(0);
+    drawPeriodChart(0);
+    scroller1.resize();
+    scroller2.resize();
+  }, 250);
+});
+</script>
+
+</body>
+</html>
