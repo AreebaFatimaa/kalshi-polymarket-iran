@@ -30,38 +30,35 @@ a { color: #2563eb; }
 
 /* ── Layout ── */
 .container { max-width: 680px; margin: 0 auto; padding: 0 1.25rem; }
-.wide-container { max-width: 1100px; margin: 0 auto; padding: 0 1.25rem; }
 
 /* ── Header ── */
+.cover-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  display: block;
+}
 header {
-  padding: 4rem 0 2rem;
-  border-bottom: 4px solid #1a1a2e;
+  padding: 0 0 2rem;
   margin-bottom: 2rem;
 }
-header .container { max-width: 680px; }
-.kicker {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #dc2626;
-  margin-bottom: 0.75rem;
-}
+header .container { max-width: 680px; padding-top: 1.5rem; }
 .subtitle {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   font-size: 1.1rem;
   font-weight: 400;
   color: #4b5563;
   line-height: 1.5;
-  margin-top: 1rem;
+  margin-top: 0.75rem;
 }
 .byline {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: #6b7280;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
 }
+.byline a { color: #1a1a2e; text-decoration: none; border-bottom: 1px solid #6b7280; }
+.byline a:hover { color: #2563eb; border-bottom-color: #2563eb; }
 
 /* ── Prose sections ── */
 .prose { padding: 2rem 0; }
@@ -95,48 +92,48 @@ header .container { max-width: 680px; }
 .scrolly__graphic {
   position: sticky;
   top: 0;
-  width: 55%;
+  width: 60%;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 0.75rem;
 }
 .scrolly__graphic .chart-container {
   width: 100%;
-  max-width: 560px;
+  max-width: 700px;
   background: #fafafa;
   border: 1px solid #e5e7eb;
   border-radius: 4px;
-  padding: 1.5rem;
+  padding: 1.25rem 1.5rem;
 }
 .chart-title {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 700;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
   color: #1a1a2e;
 }
 .chart-subtitle {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   font-size: 0.75rem;
   color: #6b7280;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 .chart-source {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   font-size: 0.65rem;
   color: #9ca3af;
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
 }
 .scrolly__steps {
-  width: 45%;
-  padding: 0 1.25rem;
+  width: 40%;
+  padding: 0 1rem;
 }
 .step {
   min-height: 75vh;
   display: flex;
   align-items: center;
-  padding: 2rem 1rem;
+  padding: 2rem 0.5rem;
   opacity: 0.25;
   transition: opacity 0.4s ease;
 }
@@ -170,7 +167,6 @@ header .container { max-width: 680px; }
   fill: #6b7280;
 }
 .axis line, .axis path { stroke: #e5e7eb; }
-.gridline line { stroke: #f3f4f6; }
 .annotation {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   font-size: 11px;
@@ -184,8 +180,8 @@ header .container { max-width: 680px; }
   font-weight: 700;
   font-size: 0.95rem;
 }
-.poly-color { color: #6366f1; }
-.kalshi-color { color: #0ea5e9; }
+.poly-color { color: #2563eb; }
+.kalshi-color { color: #00b341; }
 .june-color { color: #dc2626; }
 .feb-color { color: #2563eb; }
 
@@ -230,6 +226,12 @@ footer p {
   padding: 0 1.25rem;
   line-height: 1.6;
 }
+footer .github-link {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 1rem;
+}
+footer .github-link a { color: #2563eb; }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
@@ -239,7 +241,7 @@ footer p {
   .scrolly__graphic {
     position: sticky;
     width: 100%;
-    height: 55vh;
+    height: 60vh;
     padding: 0.5rem;
   }
   .scrolly__steps { width: 100%; padding: 0 0.75rem; }
@@ -251,12 +253,12 @@ footer p {
 <body>
 
 <!-- ═══════════════════ HEADER ═══════════════════ -->
+<img src="cover.png" alt="Kalshi v Polymarket: Iran war-time prediction markets" class="cover-image">
 <header>
   <div class="container">
-    <div class="kicker">Prediction Markets &amp; Geopolitics</div>
     <h1>Kalshi v Polymarket: Deconstructing war-time bets during U.S.-Israel war on Iran</h1>
-    <p class="subtitle">How two prediction market platforms handled over $1 billion in bets on the conflict &mdash; and what the money reveals about what traders really expected.</p>
-    <p class="byline">Data analysis and reporting</p>
+    <p class="subtitle">How bettors dealt with the 12-day war and the 2026 escalation on Kalshi and Polymarket</p>
+    <p class="byline">By <a href="https://areebafatimaa.github.io" target="_blank">Areeba Fatima</a></p>
   </div>
 </header>
 
@@ -266,7 +268,7 @@ footer p {
 
   <p>The comment section of &ldquo;Khamenei out as Supreme Leader of Iran by February 28?&rdquo; opens a window into the dissatisfaction that many traders will walk away with, once the market resolves.</p>
 
-  <div class="pull-quote">&ldquo;I JUST DISPUTED THIS I TOLD YOU FUCKS I WOULD NOT STAND FOR A FALSE RESOLUTION.&rdquo;<br><span style="font-style:normal; font-size:0.8rem; color:#9ca3af;">&mdash; Top comment on a market with $97 million in trading volume</span></div>
+  <div class="pull-quote">&ldquo;I JUST DISPUTED THIS I TOLD YOU FUCKS I WOULD NOT STAND FOR A FALSE RESOLUTION.&rdquo;<br><span style="font-style:normal; font-size:0.8rem; color:#9ca3af;">Top comment on a market with $97 million in trading volume</span></div>
 
   <p>The discussion in the comments points to a heated debate over how this market should be resolved. Some traders claim it would be unfair to conclude that Khamenei was killed on Feb. 28, because the Iranian government confirmed his death on Mar. 1.</p>
 
@@ -296,7 +298,7 @@ footer p {
     <div class="step" data-step="p0">
       <div class="step-inner">
         <p><strong>Polymarket&rsquo;s 2026 Iran markets generated <span class="data-callout poly-color">$943 million</span> in total trading volume</strong> across 22 markets tied to the February strikes.</p>
-        <p>The single largest market &mdash; &ldquo;US strikes Iran by...?&rdquo; &mdash; attracted $529 million on its own, spread across 65 sub-markets betting on different dates.</p>
+        <p>The single largest market, &ldquo;US strikes Iran by...?&rdquo;, attracted $529 million on its own, spread across 65 sub-markets betting on different dates.</p>
       </div>
     </div>
     <div class="step" data-step="p1">
@@ -337,7 +339,7 @@ footer p {
 <div class="compare-table">
   <table>
     <thead>
-      <tr><th></th><th style="color:#6366f1;">Polymarket</th><th style="color:#0ea5e9;">Kalshi</th></tr>
+      <tr><th></th><th style="color:#2563eb;">Polymarket</th><th style="color:#00b341;">Kalshi</th></tr>
     </thead>
     <tbody>
       <tr><td><strong>Regulation</strong></td><td>Unregulated offshore (Polygon blockchain)</td><td>CFTC-regulated U.S. exchange</td></tr>
@@ -352,7 +354,7 @@ footer p {
 </div>
 
 <section class="prose">
-  <p>The regulatory gap explains the volume gap. Polymarket&rsquo;s crypto-native, globally accessible model attracts orders of magnitude more capital on geopolitical bets &mdash; but it also attracts more controversy, more disputed resolutions, and more suspicion of insider trading.</p>
+  <p>The regulatory gap explains the volume gap. Polymarket&rsquo;s crypto-native, globally accessible model attracts orders of magnitude more capital on geopolitical bets, but it also attracts more controversy, more disputed resolutions, and more suspicion of insider trading.</p>
 </section>
 
 <div class="section-break"></div>
@@ -381,7 +383,7 @@ footer p {
     </div>
     <div class="step" data-step="t1">
       <div class="step-inner">
-        <p>The <strong><span class="feb-color">2026 U.S. Strikes</span></strong> generated <strong>$943 million</strong> &mdash; a <strong>5.4x increase</strong> over the 12-Day War.</p>
+        <p>The <strong><span class="feb-color">2026 U.S. Strikes</span></strong> generated <strong>$943 million</strong>, a <strong>5.4x increase</strong> over the 12-Day War.</p>
         <p>CoinDesk reported Iran-related bets topped $529 million on a single market, making it one of the most-traded contracts Polymarket has ever hosted.</p>
       </div>
     </div>
@@ -389,7 +391,7 @@ footer p {
       <div class="step-inner">
         <p><strong>The kind of bets changed dramatically.</strong></p>
         <p>In June 2025, <span class="june-color"><strong>ceasefire bets dominated</strong></span> at 30% of all volume. Traders wanted to know when it would end.</p>
-        <p>In 2026, <span class="feb-color"><strong>military strike timing</strong></span> dominates at 71% of volume. And <strong>leadership/Khamenei</strong> bets exploded from $8M to $221M &mdash; a 27x increase.</p>
+        <p>In 2026, <span class="feb-color"><strong>military strike timing</strong></span> dominates at 71% of volume. And <strong>leadership/Khamenei</strong> bets exploded from $8M to $221M, a 27x increase.</p>
       </div>
     </div>
     <div class="step" data-step="t3">
@@ -408,24 +410,32 @@ footer p {
 <section class="prose">
   <h2>What traders are betting on now</h2>
   <p>As of March 1, 2026, the active markets paint a picture of what traders expect next:</p>
-  <p>Khamenei is out &mdash; that&rsquo;s priced at <strong>99.9%</strong> certainty. But whether the Iranian regime itself falls is far less clear: <strong>23%</strong> by March 31, <strong>42%</strong> by June 30. A new Supreme Leader will be named by March 31, traders say, with <strong>77%</strong> confidence.</p>
-  <p>On Kalshi, the most-traded question is who that leader will be. Alireza Arafi leads at 25%, followed by &ldquo;position abolished&rdquo; at 19% &mdash; a bet that Iran may not have a Supreme Leader at all.</p>
-  <p>The prediction markets have become a real-time barometer of geopolitical expectations &mdash; one where a billion dollars of capital is backing every percentage point.</p>
+  <p>Khamenei is out. That&rsquo;s priced at <strong>99.9%</strong> certainty. But whether the Iranian regime itself falls is far less clear: <strong>23%</strong> by March 31, <strong>42%</strong> by June 30. A new Supreme Leader will be named by March 31, traders say, with <strong>77%</strong> confidence.</p>
+  <p>On Kalshi, the most-traded question is who that leader will be. Alireza Arafi leads at 25%, followed by &ldquo;position abolished&rdquo; at 19%, a bet that Iran may not have a Supreme Leader at all.</p>
+  <p>The prediction markets have become a real-time barometer of geopolitical expectations, one where a billion dollars of capital is backing every percentage point.</p>
 </section>
 
 <!-- ═══════════════════ FOOTER ═══════════════════ -->
 <footer>
   <p><strong>Methodology:</strong> Polymarket data collected via the Gamma API on March 1, 2026. Kalshi data collected manually from kalshi.com/category/politics/iran on the same date. Markets were classified by conflict period based on creation dates and subject matter. Volume figures represent total contracts traded, not open interest. All Kalshi markets shown are for the 2026 period; the settled Khamenei market ($54.5M) was excluded from active comparisons.</p>
   <p style="margin-top:0.5rem;"><strong>Sources:</strong> <a href="https://polymarket.com/predictions/iran" target="_blank">Polymarket</a> &middot; <a href="https://kalshi.com/category/politics/iran" target="_blank">Kalshi</a> &middot; CoinDesk &middot; The Daily Beast &middot; NPR &middot; Times of Israel &middot; Bubblemaps</p>
+  <p class="github-link">View the project on <a href="https://github.com/AreebaFatimaa/kalshi-polymarket-iran" target="_blank">GitHub</a></p>
 </footer>
 
 <!-- ═══════════════════ JAVASCRIPT ═══════════════════ -->
 <script>
+// ── Colors ──
+const POLY_BLUE = '#2563eb';
+const POLY_BLUE_LIGHT = '#93c5fd';
+const KALSHI_GREEN = '#00b341';
+const JUNE_RED = '#dc2626';
+const FEB_BLUE = '#2563eb';
+
 // ── Data ──
 const platformData = {
   totals: [
-    { platform: 'Polymarket', volume: 943070153, color: '#6366f1' },
-    { platform: 'Kalshi', volume: 6622537, color: '#0ea5e9' }
+    { platform: 'Polymarket', volume: 943070153, color: POLY_BLUE },
+    { platform: 'Kalshi', volume: 6622537, color: KALSHI_GREEN }
   ],
   comparable: [
     { category: 'Next Supreme Leader', poly: 1068190, kalshi: 3270304 },
@@ -450,8 +460,8 @@ const platformData = {
 
 const periodData = {
   totals: [
-    { period: 'June 2025\n12-Day War', volume: 175090162, color: '#dc2626', markets: 9 },
-    { period: 'Feb 2026\nU.S. Strikes', volume: 943070153, color: '#2563eb', markets: 22 }
+    { period: 'June 2025\n12-Day War', volume: 175090162, color: JUNE_RED, markets: 9 },
+    { period: 'Feb 2026\nU.S. Strikes', volume: 943070153, color: FEB_BLUE, markets: 22 }
   ],
   categories: [
     { cat: 'Military strikes',  june: 49798061,  feb: 668100000 },
@@ -484,15 +494,15 @@ function fmtPrecise(n) {
   return '$' + n;
 }
 
-// ── Chart dimensions ──
+// ── Chart dimensions (larger) ──
 function getDims(containerId) {
   const el = document.getElementById(containerId);
   const w = el.clientWidth;
   const isMobile = window.innerWidth < 768;
   return {
     width: w,
-    height: isMobile ? 320 : 380,
-    margin: { top: 10, right: 90, bottom: 30, left: isMobile ? 100 : 150 }
+    height: isMobile ? 350 : 440,
+    margin: { top: 10, right: 95, bottom: 35, left: isMobile ? 110 : 160 }
   };
 }
 
@@ -518,60 +528,56 @@ function drawPlatformChart(step) {
   const innerH = dim.height - dim.margin.top - dim.margin.bottom;
 
   if (step <= 1) {
-    // Steps 0-1: Total volume comparison
     const data = step === 0
       ? [platformData.totals[0]]
       : platformData.totals;
 
-    const y = d3.scaleBand().domain(data.map(d => d.platform)).range([0, Math.min(data.length * 65, innerH)]).padding(0.4);
+    const y = d3.scaleBand().domain(data.map(d => d.platform)).range([0, Math.min(data.length * 80, innerH)]).padding(0.4);
     const x = d3.scaleLinear().domain([0, 1e9]).range([0, innerW]);
 
-    // Gridlines
     g.selectAll('.gridline').data(x.ticks(4)).join('line')
-      .attr('class', 'gridline')
       .attr('x1', d => x(d)).attr('x2', d => x(d))
-      .attr('y1', 0).attr('y2', Math.min(data.length * 65, innerH))
+      .attr('y1', 0).attr('y2', Math.min(data.length * 80, innerH))
       .attr('stroke', '#f3f4f6');
 
-    // Bars
-    const bars = g.selectAll('.bar').data(data).join('rect')
-      .attr('class', 'bar')
+    g.selectAll('.bar').data(data).join('rect')
       .attr('y', d => y(d.platform))
       .attr('height', y.bandwidth())
       .attr('x', 0)
       .attr('fill', d => d.color)
-      .attr('rx', 2);
-    bars.transition().duration(600).attr('width', d => x(d.volume));
+      .attr('rx', 2)
+      .transition().duration(600).attr('width', d => x(d.volume));
 
-    // Labels
     g.selectAll('.bar-label').data(data).join('text')
       .attr('class', 'bar-label')
-      .attr('x', -8)
+      .attr('x', -10)
       .attr('y', d => y(d.platform) + y.bandwidth() / 2)
       .attr('text-anchor', 'end')
       .attr('dominant-baseline', 'central')
+      .style('font-size', '13px')
+      .style('font-weight', '600')
       .text(d => d.platform);
 
-    // Values
     g.selectAll('.bar-value').data(data).join('text')
       .attr('class', 'bar-value')
       .attr('x', d => x(d.volume) + 8)
       .attr('y', d => y(d.platform) + y.bandwidth() / 2)
       .attr('dominant-baseline', 'central')
+      .style('font-size', '13px')
       .text(d => fmtPrecise(d.volume));
 
     if (step === 1) {
       g.append('text').attr('class', 'annotation')
-        .attr('x', x(6622537) + 80)
-        .attr('y', y('Kalshi') + y.bandwidth() / 2 + 20)
+        .attr('x', x(6622537) + 90)
+        .attr('y', y('Kalshi') + y.bandwidth() / 2 + 22)
+        .style('font-size', '12px')
         .text('143x smaller');
     }
 
   } else if (step === 2) {
-    // Top Polymarket markets
     const data = platformData.polyTop;
-    const y = d3.scaleBand().domain(data.map(d => d.name)).range([0, innerH]).padding(0.3);
-    const x = d3.scaleLinear().domain([0, 550e6]).range([0, innerW]);
+    const y = d3.scaleBand().domain(data.map(d => d.name)).range([0, innerH]).padding(0.25);
+    const x = d3.scaleLinear().domain([0, 560e6]).range([0, innerW]);
 
     g.selectAll('.gridline').data(x.ticks(4)).join('line')
       .attr('x1', d => x(d)).attr('x2', d => x(d))
@@ -583,7 +589,7 @@ function drawPlatformChart(step) {
       .attr('height', y.bandwidth())
       .attr('x', 0)
       .attr('rx', 2)
-      .attr('fill', d => d.type === 'aggregate' ? '#a5b4fc' : '#6366f1')
+      .attr('fill', d => d.type === 'aggregate' ? POLY_BLUE_LIGHT : POLY_BLUE)
       .transition().duration(600)
       .attr('width', d => x(d.vol));
 
@@ -592,7 +598,7 @@ function drawPlatformChart(step) {
       .attr('x', -8).attr('text-anchor', 'end')
       .attr('y', d => y(d.name) + y.bandwidth() / 2)
       .attr('dominant-baseline', 'central')
-      .style('font-size', '10px')
+      .style('font-size', '11px')
       .text(d => d.name);
 
     g.selectAll('.bar-value').data(data).join('text')
@@ -600,20 +606,18 @@ function drawPlatformChart(step) {
       .attr('x', d => x(d.vol) + 6)
       .attr('y', d => y(d.name) + y.bandwidth() / 2)
       .attr('dominant-baseline', 'central')
-      .style('font-size', '10px')
+      .style('font-size', '11px')
       .text(d => fmt(d.vol));
 
-    // Legend
-    const lg = svg.append('g').attr('transform', `translate(${dim.margin.left}, ${dim.height - 15})`);
-    lg.append('rect').attr('width', 10).attr('height', 10).attr('fill', '#6366f1').attr('rx', 1);
+    const lg = svg.append('g').attr('transform', `translate(${dim.margin.left}, ${dim.height - 18})`);
+    lg.append('rect').attr('width', 10).attr('height', 10).attr('fill', POLY_BLUE).attr('rx', 1);
     lg.append('text').attr('x', 14).attr('y', 9).style('font-size', '10px').style('font-family', 'sans-serif').style('fill', '#6b7280').text('Single binary market');
-    lg.append('rect').attr('x', 140).attr('width', 10).attr('height', 10).attr('fill', '#a5b4fc').attr('rx', 1);
-    lg.append('text').attr('x', 154).attr('y', 9).style('font-size', '10px').style('font-family', 'sans-serif').style('fill', '#6b7280').text('Multi-outcome aggregate');
+    lg.append('rect').attr('x', 145).attr('width', 10).attr('height', 10).attr('fill', POLY_BLUE_LIGHT).attr('rx', 1);
+    lg.append('text').attr('x', 159).attr('y', 9).style('font-size', '10px').style('font-family', 'sans-serif').style('fill', '#6b7280').text('Multi-outcome aggregate');
 
   } else {
-    // Comparable categories
     const data = platformData.comparable.filter(d => d.poly > 0 || d.kalshi > 0);
-    const y = d3.scaleBand().domain(data.map(d => d.category)).range([0, innerH]).padding(0.25);
+    const y = d3.scaleBand().domain(data.map(d => d.category)).range([0, innerH]).padding(0.2);
     const subY = d3.scaleBand().domain(['poly', 'kalshi']).range([0, y.bandwidth()]).padding(0.08);
     const maxVal = d3.max(data, d => Math.max(d.poly, d.kalshi));
     const x = d3.scaleLinear().domain([0, maxVal * 1.15]).range([0, innerW]);
@@ -627,17 +631,17 @@ function drawPlatformChart(step) {
       const gy = g.append('g').attr('transform', `translate(0, ${y(d.category)})`);
       if (d.poly > 0) {
         gy.append('rect').attr('y', subY('poly')).attr('height', subY.bandwidth())
-          .attr('fill', '#6366f1').attr('rx', 2)
+          .attr('fill', POLY_BLUE).attr('rx', 2)
           .transition().duration(600).attr('width', x(d.poly));
-        gy.append('text').attr('class', 'bar-value').style('font-size', '10px')
+        gy.append('text').attr('class', 'bar-value').style('font-size', '11px')
           .attr('x', x(d.poly) + 5).attr('y', subY('poly') + subY.bandwidth()/2)
           .attr('dominant-baseline', 'central').text(fmt(d.poly));
       }
       if (d.kalshi > 0) {
         gy.append('rect').attr('y', subY('kalshi')).attr('height', subY.bandwidth())
-          .attr('fill', '#0ea5e9').attr('rx', 2)
+          .attr('fill', KALSHI_GREEN).attr('rx', 2)
           .transition().duration(600).attr('width', x(d.kalshi));
-        gy.append('text').attr('class', 'bar-value').style('font-size', '10px')
+        gy.append('text').attr('class', 'bar-value').style('font-size', '11px')
           .attr('x', x(d.kalshi) + 5).attr('y', subY('kalshi') + subY.bandwidth()/2)
           .attr('dominant-baseline', 'central').text(fmt(d.kalshi));
       }
@@ -648,15 +652,14 @@ function drawPlatformChart(step) {
       .attr('x', -8).attr('text-anchor', 'end')
       .attr('y', d => y(d.category) + y.bandwidth() / 2)
       .attr('dominant-baseline', 'central')
-      .style('font-size', '10px')
+      .style('font-size', '11px')
       .text(d => d.category);
 
-    // Legend
-    const lg = svg.append('g').attr('transform', `translate(${dim.margin.left}, ${dim.height - 15})`);
-    lg.append('rect').attr('width', 10).attr('height', 10).attr('fill', '#6366f1').attr('rx', 1);
+    const lg = svg.append('g').attr('transform', `translate(${dim.margin.left}, ${dim.height - 18})`);
+    lg.append('rect').attr('width', 10).attr('height', 10).attr('fill', POLY_BLUE).attr('rx', 1);
     lg.append('text').attr('x', 14).attr('y', 9).style('font-size', '10px').style('font-family', 'sans-serif').style('fill', '#6b7280').text('Polymarket');
-    lg.append('rect').attr('x', 90).attr('width', 10).attr('height', 10).attr('fill', '#0ea5e9').attr('rx', 1);
-    lg.append('text').attr('x', 104).attr('y', 9).style('font-size', '10px').style('font-family', 'sans-serif').style('fill', '#6b7280').text('Kalshi');
+    lg.append('rect').attr('x', 95).attr('width', 10).attr('height', 10).attr('fill', KALSHI_GREEN).attr('rx', 1);
+    lg.append('text').attr('x', 109).attr('y', 9).style('font-size', '10px').style('font-family', 'sans-serif').style('fill', '#6b7280').text('Kalshi');
   }
 }
 
@@ -681,7 +684,6 @@ function drawPeriodChart(step) {
   const innerW = dim.width - dim.margin.left - dim.margin.right;
   const innerH = dim.height - dim.margin.top - dim.margin.bottom;
 
-  // Update chart title
   const titleEl = container.node().closest('.chart-container').querySelector('.chart-title');
   const subtitleEl = container.node().closest('.chart-container').querySelector('.chart-subtitle');
 
@@ -693,12 +695,12 @@ function drawPeriodChart(step) {
       ? [periodData.totals[0]]
       : periodData.totals;
 
-    const y = d3.scaleBand().domain(data.map(d => d.period)).range([0, Math.min(data.length * 75, innerH)]).padding(0.4);
+    const y = d3.scaleBand().domain(data.map(d => d.period)).range([0, Math.min(data.length * 90, innerH)]).padding(0.4);
     const x = d3.scaleLinear().domain([0, 1e9]).range([0, innerW]);
 
     g.selectAll('.gridline').data(x.ticks(4)).join('line')
       .attr('x1', d => x(d)).attr('x2', d => x(d))
-      .attr('y1', 0).attr('y2', Math.min(data.length * 75, innerH))
+      .attr('y1', 0).attr('y2', Math.min(data.length * 90, innerH))
       .attr('stroke', '#f3f4f6');
 
     g.selectAll('.bar').data(data).join('rect')
@@ -708,15 +710,16 @@ function drawPeriodChart(step) {
 
     g.selectAll('.bar-label').data(data).join('text')
       .attr('class', 'bar-label')
-      .attr('x', -8).attr('text-anchor', 'end')
+      .attr('x', -10).attr('text-anchor', 'end')
       .attr('y', d => y(d.period) + y.bandwidth() / 2)
       .attr('dominant-baseline', 'central')
+      .style('font-size', '12px')
       .each(function(d) {
         const lines = d.period.split('\n');
         const el = d3.select(this);
         el.text('');
         lines.forEach((line, i) => {
-          el.append('tspan').attr('x', -8).attr('dy', i === 0 ? '-0.3em' : '1.2em').text(line);
+          el.append('tspan').attr('x', -10).attr('dy', i === 0 ? '-0.3em' : '1.2em').text(line);
         });
       });
 
@@ -725,15 +728,15 @@ function drawPeriodChart(step) {
       .attr('x', d => x(d.volume) + 8)
       .attr('y', d => y(d.period) + y.bandwidth() / 2)
       .attr('dominant-baseline', 'central')
+      .style('font-size', '13px')
       .text(d => fmtPrecise(d.volume));
 
     if (step === 1) {
-      // Arrow annotation
       g.append('text').attr('class', 'annotation')
         .attr('x', innerW / 2)
-        .attr('y', Math.min(data.length * 75, innerH) + 20)
+        .attr('y', Math.min(data.length * 90, innerH) + 22)
         .attr('text-anchor', 'middle')
-        .style('font-weight', '600').style('fill', '#2563eb')
+        .style('font-weight', '600').style('fill', FEB_BLUE).style('font-size', '13px')
         .text('5.4x increase in volume');
     }
 
@@ -742,7 +745,7 @@ function drawPeriodChart(step) {
     subtitleEl.textContent = 'How the type of bets shifted between conflict periods.';
 
     const data = periodData.categories;
-    const y = d3.scaleBand().domain(data.map(d => d.cat)).range([0, innerH]).padding(0.25);
+    const y = d3.scaleBand().domain(data.map(d => d.cat)).range([0, innerH]).padding(0.2);
     const subY = d3.scaleBand().domain(['june', 'feb']).range([0, y.bandwidth()]).padding(0.08);
     const maxVal = d3.max(data, d => Math.max(d.june, d.feb));
     const x = d3.scaleLinear().domain([0, maxVal * 1.1]).range([0, innerW]);
@@ -756,17 +759,17 @@ function drawPeriodChart(step) {
       const gy = g.append('g').attr('transform', `translate(0, ${y(d.cat)})`);
       if (d.june > 0) {
         gy.append('rect').attr('y', subY('june')).attr('height', subY.bandwidth())
-          .attr('fill', '#dc2626').attr('rx', 2).attr('opacity', 0.85)
+          .attr('fill', JUNE_RED).attr('rx', 2).attr('opacity', 0.85)
           .transition().duration(600).attr('width', x(d.june));
-        gy.append('text').attr('class', 'bar-value').style('font-size', '10px')
+        gy.append('text').attr('class', 'bar-value').style('font-size', '11px')
           .attr('x', x(d.june) + 5).attr('y', subY('june') + subY.bandwidth()/2)
           .attr('dominant-baseline', 'central').text(fmt(d.june));
       }
       if (d.feb > 0) {
         gy.append('rect').attr('y', subY('feb')).attr('height', subY.bandwidth())
-          .attr('fill', '#2563eb').attr('rx', 2).attr('opacity', 0.85)
+          .attr('fill', FEB_BLUE).attr('rx', 2).attr('opacity', 0.85)
           .transition().duration(600).attr('width', x(d.feb));
-        gy.append('text').attr('class', 'bar-value').style('font-size', '10px')
+        gy.append('text').attr('class', 'bar-value').style('font-size', '11px')
           .attr('x', x(d.feb) + 5).attr('y', subY('feb') + subY.bandwidth()/2)
           .attr('dominant-baseline', 'central').text(fmt(d.feb));
       }
@@ -777,14 +780,13 @@ function drawPeriodChart(step) {
       .attr('x', -8).attr('text-anchor', 'end')
       .attr('y', d => y(d.cat) + y.bandwidth() / 2)
       .attr('dominant-baseline', 'central')
-      .style('font-size', '10.5px')
+      .style('font-size', '11px')
       .text(d => d.cat);
 
-    // Legend
-    const lg = svg.append('g').attr('transform', `translate(${dim.margin.left}, ${dim.height - 15})`);
-    lg.append('rect').attr('width', 10).attr('height', 10).attr('fill', '#dc2626').attr('rx', 1);
+    const lg = svg.append('g').attr('transform', `translate(${dim.margin.left}, ${dim.height - 18})`);
+    lg.append('rect').attr('width', 10).attr('height', 10).attr('fill', JUNE_RED).attr('rx', 1);
     lg.append('text').attr('x', 14).attr('y', 9).style('font-size', '10px').style('font-family', 'sans-serif').style('fill', '#6b7280').text('June 2025');
-    lg.append('rect').attr('x', 90).attr('width', 10).attr('height', 10).attr('fill', '#2563eb').attr('rx', 1);
+    lg.append('rect').attr('x', 90).attr('width', 10).attr('height', 10).attr('fill', FEB_BLUE).attr('rx', 1);
     lg.append('text').attr('x', 104).attr('y', 9).style('font-size', '10px').style('font-family', 'sans-serif').style('fill', '#6b7280').text('Feb 2026');
 
   } else {
@@ -792,20 +794,18 @@ function drawPeriodChart(step) {
     subtitleEl.textContent = 'Cumulative share of total volume by market rank.';
 
     const data = periodData.concentration;
-    const y = d3.scaleBand().domain(data.map(d => d.rank)).range([0, innerH]).padding(0.35);
+    const y = d3.scaleBand().domain(data.map(d => d.rank)).range([0, innerH]).padding(0.3);
     const x = d3.scaleLinear().domain([0, 100]).range([0, innerW]);
 
-    // Background 100% bars
     g.selectAll('.bg-bar').data(data).join('rect')
       .attr('y', d => y(d.rank)).attr('height', y.bandwidth())
       .attr('x', 0).attr('width', innerW)
       .attr('fill', '#f3f4f6').attr('rx', 2);
 
-    // Filled bars
     g.selectAll('.bar').data(data).join('rect')
       .attr('y', d => y(d.rank)).attr('height', y.bandwidth())
       .attr('x', 0).attr('rx', 2)
-      .attr('fill', (d, i) => i < 4 ? '#2563eb' : '#94a3b8')
+      .attr('fill', (d, i) => i < 4 ? FEB_BLUE : '#94a3b8')
       .transition().duration(600)
       .attr('width', d => x(d.pct));
 
@@ -814,6 +814,7 @@ function drawPeriodChart(step) {
       .attr('x', -8).attr('text-anchor', 'end')
       .attr('y', d => y(d.rank) + y.bandwidth() / 2)
       .attr('dominant-baseline', 'central')
+      .style('font-size', '12px')
       .text(d => d.rank);
 
     g.selectAll('.bar-value').data(data).join('text')
@@ -821,6 +822,7 @@ function drawPeriodChart(step) {
       .attr('x', d => x(d.pct) + 6)
       .attr('y', d => y(d.rank) + y.bandwidth() / 2)
       .attr('dominant-baseline', 'central')
+      .style('font-size', '12px')
       .text(d => d.pct + '%');
   }
 }
@@ -833,7 +835,6 @@ function initScrolly(containerSelector, chartDrawFn) {
     offset: 0.5,
     debug: false
   }).onStepEnter(response => {
-    // Activate step
     d3.selectAll(containerSelector + ' .step').classed('is-active', false);
     d3.select(response.element).classed('is-active', true);
     chartDrawFn(response.index);
@@ -845,11 +846,9 @@ function initScrolly(containerSelector, chartDrawFn) {
 const scroller1 = initScrolly('#scrolly-platform', drawPlatformChart);
 const scroller2 = initScrolly('#scrolly-period', drawPeriodChart);
 
-// Draw initial states
 drawPlatformChart(0);
 drawPeriodChart(0);
 
-// Handle resize
 let resizeTimer;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
